@@ -82,10 +82,10 @@ client.on('interactionCreate', async i => {
 					.setLabel("Verify user")
 					.setDisabled(true)
 				const row = new ActionRowBuilder().addComponents(button);
+				await i.reply({ content: "User successfully verified!" });
 				await i.message.edit({
 					components: [row.toJSON()],
 				});
-				await i.reply({ content: "User successfully verified!" });
 			}
 		}
 	} catch (e) { console.error(e) }
