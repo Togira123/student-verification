@@ -35,25 +35,21 @@ client.on('interactionCreate', async i => {
 				} else {
 					userCodes.set(userId, randomCode);
 				}
-				const button = new ButtonBuilder()
-					.setCustomId(`verification_done${randomCode}${userId}`)
-					.setStyle(ButtonStyle.Primary)
-					.setLabel("I filled out the form")
-				const row = new ActionRowBuilder().addComponents(button);
+				const linkButton = new ButtonBuilder()
+					.setStyle(ButtonStyle.Link)
+					.setLabel("Form")
+					.setURL(formLink)
+				const linkRow = new ActionRowBuilder().addComponents(linkButton);
 				await i.reply({
-					content: `Your personal code is: \`${randomCode}\`. Click the following link and put it in the form: ${formLink}. **After submitting the form, click the button below to finish the verification.**`,
-					components: [row.toJSON()],
+					content: `Your personal code is: \`${randomCode}\`. Click the button below to open the form. Paste your code and submit. Note that it might take several hours before you get the role.`,
+					components: [linkRow.toJSON()],
 					flags: MessageFlags.Ephemeral
 				});
-
-			} else if (i.customId.startsWith("verification_done")) {
 				const botChannel = (await client.channels.fetch(botChannelId)) as SendableChannels | null;
 				if (!botChannel) {
 					console.log("Cannot find #bot");
 					return;
 				}
-				const code = i.customId.substring("verification_done".length, "verification_done".length + 6);
-				const userId = i.customId.substring("verification_done".length + code.length);
 				const button = new ButtonBuilder()
 					.setCustomId("verify_user" + userId)
 					.setStyle(ButtonStyle.Primary)
@@ -62,14 +58,10 @@ client.on('interactionCreate', async i => {
 				await botChannel.send({
 					embeds: [
 						new EmbedBuilder()
-							.setDescription(`<@${userId}> verified with code \`${code}\`. Check the [form responses](${adminFormLink}) to see whether they contain this code. If so, verify the user by pressing the button below.`)
+							.setDescription(`<@${userId}> is verifying with code \`${randomCode}\`. Check the [form responses](${adminFormLink}) to see whether they contain this code. If so, verify the user by pressing the button below.`)
 							.toJSON()
 					],
 					components: [row.toJSON()]
-				});
-				await i.reply({
-					content: "Verification Request submitted! Note that it might take several hours before you get the role. You can now dismiss these messages.",
-					flags: MessageFlags.Ephemeral
 				});
 			} else if (i.customId.startsWith("verify_user")) {
 				const userId = i.customId.substring("verify_user".length);
