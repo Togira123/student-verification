@@ -37,11 +37,12 @@ client.on('interactionCreate', async i => {
 				}
 				const linkButton = new ButtonBuilder()
 					.setStyle(ButtonStyle.Link)
-					.setLabel("Form")
-					.setURL(formLink)
+					.setLabel("Visit Form")
+					.setURL(formLink + randomCode)
 				const linkRow = new ActionRowBuilder().addComponents(linkButton);
+
 				await i.reply({
-					content: `Your personal code is: \`${randomCode}\`. Click the button below to open the form. Paste your code and submit. Note that it might take several hours before you get the role.`,
+					content: `<@${userId}>\n# Your Code:\n# \\>\\>\\> ${randomCode} <<<\n\n-# Visit the form and paste the code to get verified as a student.\n\`\`\`ansi\n\u001b[0;41mCode verification is manual. It might take a few hours to receive the student role.\`\`\``,
 					components: [linkRow.toJSON()],
 					flags: MessageFlags.Ephemeral
 				});
