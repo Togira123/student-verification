@@ -73,8 +73,8 @@ client.on('interactionCreate', async i => {
 				await member.roles.add(studentRoleId);
 				const button = new ButtonBuilder()
 					.setCustomId("verify_user" + userId)
-					.setStyle(ButtonStyle.Primary)
-					.setLabel("Verify user")
+					.setStyle(ButtonStyle.Secondary)
+					.setLabel("Verified")
 					.setDisabled(true)
 				const row = new ActionRowBuilder().addComponents(button);
 				await i.reply({ content: "User successfully verified!" });
