@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, Client, EmbedBuilder, GatewayIntentBits, Options, Partials, SendableChannels } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, Client, EmbedBuilder, escapeMarkdown, GatewayIntentBits, Options, Partials, SendableChannels } from 'discord.js';
 import fs from 'fs';
 import { ButtonStyle, MessageFlags, Routes } from 'discord-api-types/v10';
 
@@ -58,7 +58,7 @@ client.on('interactionCreate', async i => {
 					.setLabel("Verify user")
 				const row = new ActionRowBuilder().addComponents(button);
 				await botChannel.send({
-					content: `<@${userId}> (${user.username})`,
+					content: `<@${userId}> (${escapeMarkdown(user.username)})`,
 					embeds: [
 						new EmbedBuilder()
 							.setDescription(`<@${userId}> is verifying with code \`${randomCode}\`. Check the [form responses](${adminFormLink}) to see whether they contain this code. If so, verify the user by pressing the button below.`)
