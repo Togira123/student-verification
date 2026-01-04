@@ -30,6 +30,7 @@ client.on('interactionCreate', async i => {
 			if (i.customId === "request_code") {
 				let randomCode = (Math.floor(Math.random() * 999_999).toString() + "000000").substring(0, 6);
 				const userId = i.user.id;
+				const user = await client.users.fetch(userId);
 				if (userCodes.has(userId)) {
 					randomCode = userCodes.get(userId)!;
 				} else {
@@ -57,6 +58,7 @@ client.on('interactionCreate', async i => {
 					.setLabel("Verify user")
 				const row = new ActionRowBuilder().addComponents(button);
 				await botChannel.send({
+					content: `<@${userId}> (${user.username})`,
 					embeds: [
 						new EmbedBuilder()
 							.setDescription(`<@${userId}> is verifying with code \`${randomCode}\`. Check the [form responses](${adminFormLink}) to see whether they contain this code. If so, verify the user by pressing the button below.`)
