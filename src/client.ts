@@ -4,5 +4,5 @@ export const client = new Client({
         MessageManager: 20,
     }),
     partials: [Partials.Channel],
-    intents: [GatewayIntentBits.Guilds]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
