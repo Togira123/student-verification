@@ -61,8 +61,13 @@ client.on("messageCreate", async msg => {
                 lastMessagesStruct.idx++;
             } else {
                 const msgs: MessageInfo[] = Array(MESSAGE_INFO_SIZE);
-                for (const msg of msgs) {
-                    msg.at = 0;
+                for (let i = 0; i < MESSAGE_INFO_SIZE; i++) {
+                    const m = {
+                        at: 0,
+                        channelId: "",
+                        messageId: ""
+                    };
+                    msgs[i] = m;
                 }
                 msgs[0] = {
                     at: msg.createdTimestamp,
