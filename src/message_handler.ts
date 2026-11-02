@@ -48,7 +48,7 @@ client.on("messageCreate", async msg => {
                     }
                     const botChannel = await client.channels.fetch(botChannelId);
                     if (botChannel && botChannel.isSendable()) {
-                        await botChannel.send({ content: `<@${msg.author.id} timed out automatically due to sending message with attachments in different channels too quickly. Attachments were:`, files: [...msg.attachments.values()] });
+                        await botChannel.send({ content: `<@${msg.author.id}> timed out automatically due to sending message with attachments in different channels too quickly. Attachments were:`, files: [...msg.attachments.values()] });
                     }
                 }
                 const nextIdx = (lastMessagesStruct.idx + 1) % MESSAGE_INFO_SIZE;
