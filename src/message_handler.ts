@@ -1,5 +1,6 @@
 import { botChannelId } from "./constants.ts";
 import { client } from "./client.ts";
+import { AttachmentBuilder } from "discord.js";
 
 type MessageInfo = {
     at: number;
@@ -14,7 +15,7 @@ type Messages = {
 
 const lastMessageForMember = new Map<string, Messages>();
 
-const MESSAGE_TIME_THRESHOLD = 1000;
+const MESSAGE_TIME_THRESHOLD = 1500;
 
 const MESSAGE_INFO_SIZE = 32;
 
@@ -40,7 +41,6 @@ client.on("messageCreate", async msg => {
                 if (recentMsgsInOtherChannels.length > 0) {
                     // sent two messages close together in different channels 
                     await msg.member.timeout(60 * 60 * 1000, "Sent two messages with attachments in different channels in a short period of time");
-                    await msg.delete();
                     for (const m of recentMsgsInOtherChannels) {
                         const channel = await client.channels.fetch(m.channelId);
                         if (channel && channel.isTextBased()) {
@@ -48,9 +48,21 @@ client.on("messageCreate", async msg => {
                         }
                     }
                     const botChannel = await client.channels.fetch(botChannelId);
+                    const files = await Promise.all(
+                        msg.attachments.map(async (att) => {
+                            const res = await fetch(att.url);
+                            if (!res.ok) throw new Error(`Failed to download ${att.name}: ${res.status}`);
+                            const buffer = Buffer.from(await res.arrayBuffer());
+
+                            return new AttachmentBuilder(buffer, {
+                                name: att.name,
+                            });
+                        })
+                    );
                     if (botChannel && botChannel.isSendable()) {
-                        await botChannel.send({ content: `<@${msg.author.id}> timed out automatically due to sending message with attachments in different channels too quickly. Attachments were:`, files: [...msg.attachments.values()] });
+                        await botChannel.send({ content: `<@${msg.author.id}> timed out automatically due to sending message with attachments in different channels too quickly. Attachments were:`, files });
                     }
+                    await msg.delete();
                 }
                 const nextIdx = (lastMessagesStruct.idx + 1) % MESSAGE_INFO_SIZE;
                 messages[nextIdx] = {
