@@ -40,6 +40,7 @@ client.on("messageCreate", async msg => {
                 if (recentMsgsInOtherChannels.length > 0) {
                     // sent two messages close together in different channels 
                     await msg.member.timeout(60 * 60 * 1000, "Sent two messages with attachments in different channels in a short period of time");
+                    await msg.delete();
                     for (const m of recentMsgsInOtherChannels) {
                         const channel = await client.channels.fetch(m.channelId);
                         if (channel && channel.isTextBased()) {
